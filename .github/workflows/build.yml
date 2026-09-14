@@ -10,6 +10,19 @@ permissions:
   contents: write
 
 jobs:
+  verify-lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # npm 在单个平台上生成的 lockfile 只含该平台的原生可选依赖
+      # （npm/cli#4828）。这个守卫确保 frontend/package-lock.json 里
+      # rollup / esbuild / tailwindcss-oxide / lightningcss 各平台二进制都在，
+      # 否则三个非 Windows 构建会以「Cannot find module @rollup/rollup-...」失败。
+      - name: Verify lockfile covers every build platform
+        run: python3 scripts/check-lockfile.py
+
   build-windows:
     runs-on: windows-latest
     steps:
@@ -56,6 +69,7 @@ jobs:
           path: build/bin/buddyswitch-windows-amd64.exe
 
   build-linux:
+    needs: verify-lockfile
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -114,6 +128,7 @@ jobs:
           path: build/bin/buddyswitch-linux-amd64
 
   build-linux-new:
+    needs: verify-lockfile
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -173,6 +188,7 @@ jobs:
           path: build/bin/buddyswitch-linux-amd64-webkit2_41
 
   build-macos:
+    needs: verify-lockfile
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -217,8 +233,13 @@ jobs:
       - name: Package amd64
         run: |
           cd build/bin
-          hdiutil create -volname "buddyswitch" -srcfolder buddyswitch.app \
-            -ov -format UDZO -fs HFS+ buddyswitch-darwin-amd64.dmg
+          APP=$(ls -d *.app | head -1)
+          test -n "$APP" || { echo "::error::构建没有产出 .app 产物"; exit 1; }
+          echo "打包 $APP"
+          hdiutil create -volname "BuddySwitch" -srcfolder "$APP" \
+            -ov -format UDZO buddyswitch-darwin-amd64.dmg
+          # 清掉再进下一步：否则 arm64 那轮会连本次的 .app 一起看到，挑错产物。
+          rm -rf "$APP"
 
       - name: Build arm64
         env:
@@ -235,8 +256,11 @@ jobs:
       - name: Package arm64
         run: |
           cd build/bin
-          hdiutil create -volname "buddyswitch" -srcfolder buddyswitch.app \
-            -ov -format UDZO -fs HFS+ buddyswitch-darwin-arm64.dmg
+          APP=$(ls -d *.app | head -1)
+          test -n "$APP" || { echo "::error::构建没有产出 .app 产物"; exit 1; }
+          echo "打包 $APP"
+          hdiutil create -volname "BuddySwitch" -srcfolder "$APP" \
+            -ov -format UDZO buddyswitch-darwin-arm64.dmg
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

@@ -1,0 +1,8 @@
+{
+  "language": "zh-CN",
+  "log_dir": "logs",
+  "plugin_dir": "plugins",
+  "data_dir": "data",
+  "backup_dir": "data\\backups",
+  "backup_keep": 10
+}
