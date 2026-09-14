@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 文档
+    url: https://github.com/OShinTeam/BuddySwitch/blob/main/README.md
+    about: 使用前请先查阅项目文档（信息架构、插件设计、常见运行期文件）

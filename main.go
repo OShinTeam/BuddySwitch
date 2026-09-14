@@ -2,8 +2,9 @@ package main
 
 import (
 	"embed"
-	"wails-temp/global"
-	"wails-temp/service"
+
+	"buddyswitch/global"
+	"buddyswitch/service"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -20,21 +21,23 @@ func main() {
 	global.LangFS = langFS
 	global.Init()
 
-	appName := global.GetProcessName()
-	App := service.NewApp()
+	app := service.NewApp()
 
 	err := wails.Run(&options.App{
-		Title:  appName,
-		Width:  1024,
-		Height: 768,
+		Title:     "BuddySwitch",
+		Width:     1180,
+		Height:    780,
+		MinWidth:  940,
+		MinHeight: 620,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        App.Startup,
+		// 前端是浅色主题，窗口底色跟随，避免加载瞬间的闪烁。
+		BackgroundColour: &options.RGBA{R: 247, G: 248, B: 250, A: 1},
 		Frameless:        true,
+		OnStartup:        app.Startup,
 		Bind: []interface{}{
-			App,
+			app,
 		},
 	})
 

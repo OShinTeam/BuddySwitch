@@ -117,7 +117,7 @@ func InitLogger() {
 		Log.SetReportCaller(false)
 	}
 
-	logDir := GlobalConfig.LogDir
+	logDir := Config().LogDir
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		Log.Warnf("无法创建日志目录: %v", err)
 	}

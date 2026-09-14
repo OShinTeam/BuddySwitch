@@ -58,3 +58,16 @@ coverage
 
 *.tsbuildinfo
 
+# Agent
+.copilt/
+.trae/
+.claude/
+.codex/
+.codebuddy/
+.workbuddy/
+.trellis/
+
+# APP Data
+data
+plugins
+scripts

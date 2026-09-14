@@ -1,0 +1,76 @@
+{
+  "id": "codebuddy",
+  "name": "CodeBuddy",
+  "description": "CodeBuddy 的模型配置。与 WorkBuddy 共用同一套字段（vendor / url / apiKey / supports*），差别只在容器键与文件位置。",
+  "vendor": "Tencent",
+  "color": "#10B981",
+  "version": "1.1.0",
+  "order": 20,
+  "enabled": true,
+  "source": {
+    "format": "json",
+    "paths": {
+      "windows": [
+        "%USERPROFILE%\\.codebuddy\\models.json",
+        "%APPDATA%\\CodeBuddy CN\\models.json",
+        "%APPDATA%\\CodeBuddy\\models.json"
+      ],
+      "darwin": [
+        "~/.codebuddy/models.json",
+        "~/Library/Application Support/CodeBuddy/models.json"
+      ],
+      "linux": [
+        "~/.codebuddy/models.json",
+        "~/.config/CodeBuddy/models.json"
+      ]
+    }
+  },
+  "schema": {
+    "container": ["models", ""],
+    "fields": {
+      "id": "id",
+      "display_name": "name",
+      "provider": "vendor",
+      "base_url": "url",
+      "api_key": "apiKey"
+    },
+    "capabilities": {
+      "tool_call": "supportsToolCall",
+      "images": "supportsImages",
+      "reasoning": "supportsReasoning"
+    },
+    "sync_list": "availableModels"
+  },
+  "probe": {
+    "type": "openai",
+    "endpoint": "{{base_url}}",
+    "ensure_path": "/chat/completions",
+    "method": "POST",
+    "headers": {
+      "Authorization": "Bearer {{api_key}}"
+    },
+    "body": {
+      "model": "{{id}}",
+      "messages": [
+        { "role": "user", "content": "ping" }
+      ],
+      "max_tokens": 1,
+      "stream": false
+    },
+    "timeout_ms": 15000
+  },
+  "listing": {
+    "endpoint": "{{base_url}}",
+    "strip_suffix": "/chat/completions",
+    "ensure_path": "/models",
+    "method": "GET",
+    "headers": {
+      "Authorization": "Bearer {{api_key}}"
+    },
+    "timeout_ms": 20000,
+    "array_path": "data",
+    "id_field": "id",
+    "name_field": "id",
+    "note_field": "owned_by"
+  }
+}

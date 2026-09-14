@@ -1,21 +1,17 @@
 package api
 
 import (
-	"wails-temp/global"
+	"buddyswitch/global"
 )
 
-func LogInfo(msg string) {
-	global.Log.Info(msg)
-}
+// LogInfo 记录一般信息。
+func LogInfo(msg string) { global.Log.Info(msg) }
 
-func LogWarn(msg string) {
-	global.Log.Warn(msg)
-}
+// LogWarn 记录警告信息。
+func LogWarn(msg string) { global.Log.Warn(msg) }
 
-func LogError(msg string) {
-	global.Log.Error(msg)
-}
+// LogError 记录错误信息。
+func LogError(msg string) { global.Log.Error(msg) }
 
-func LogDebug(msg string) {
-	global.Log.Debug(msg)
-}
+// LogDebug 记录调试信息。
+func LogDebug(msg string) { global.Log.Debug(msg) }
