@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./frontend/public/appicon.png" alt="BuddySwitch" width="300"/>
+  <img src="./build/appicon.png" alt="BuddySwitch" width="300"/>
 </p>
 
 # BuddySwitch
